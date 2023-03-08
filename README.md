@@ -73,3 +73,22 @@
 ```
 
 回答は上書きできる。
+
+## 開発環境
+
+docker, go
+
+初回
+
+```shell
+docker compose build
+docker compose up
+```
+
+2回目以降
+
+```shell
+docker compose up
+```
+
+airによるホットリロードが効いています。goのコード変更は自動で検知してビルドします。
