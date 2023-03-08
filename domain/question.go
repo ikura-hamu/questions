@@ -7,10 +7,10 @@ import (
 )
 
 type Question struct {
-	Id        uuid.UUID
-	Question  string
-	Answer    string
-	CreatedAt time.Time
+	Id        uuid.UUID `json:"id"`
+	Question  string    `json:"question"`
+	Answer    string    `json:"answer"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 func NewQuestion(id uuid.UUID, question string, answer string, createdAt time.Time) Question {
