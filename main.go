@@ -45,11 +45,11 @@ func main() {
 func getDSN() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parseTime=True&loc=Asia%%2FTokyo&charset=utf8mb4",
-		getEnvOrDefault("DB_USER", "root"),
-		getEnvOrDefault("DB_PASS", "password"),
-		getEnvOrDefault("DB_HOST", "db"),
-		getEnvOrDefault("DB_PORT", "3306"),
-		getEnvOrDefault("DB_NAME", "app"), // TODO: サービス名に変える
+		getEnvOrDefault("MARIADB_USERNAME", "root"),
+		getEnvOrDefault("MARIADB_PASSWORD", "password"),
+		getEnvOrDefault("MARIADB_HOSTNAME", "db"),
+		getEnvOrDefault("MARIADB_PORT", "3306"),
+		getEnvOrDefault("MARIADB_DATABASE", "app"), // TODO: サービス名に変える
 	)
 }
 

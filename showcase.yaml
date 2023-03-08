@@ -1,0 +1,8 @@
+type: runtime
+use_mariadb: true
+startup: |
+  go mod download
+  go build -o main 
+entrypoint: ./main
+https: on
+http_proxy: 3000
