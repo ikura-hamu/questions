@@ -1,5 +1,7 @@
 # questions
 
+質問箱サービス
+
 ## API
 
 ### GET /api/oauth2/authorize
@@ -38,7 +40,9 @@ codeがない
   "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
   "question": "しつもーん",
   "answer": "",
-  "createdAt": "2023-03-08T16:57:58+09:00"
+  "answerer": "",
+  "createdAt": "2023-03-08T16:57:58+09:00",
+  "updatedAt": "2023-03-08T16:57:58+09:00"
 }
 ```
 
@@ -58,7 +62,9 @@ codeがない
     "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
     "question": "しつもーん",
     "answer": "かいとうー",
-    "createdAt": "2023-03-08T16:57:58+09:00"
+    "answerer": "7265b13d-9e06-42f6-98e3-41ea742f8fb2", //traQのユーザーuuid
+    "createdAt": "2023-03-08T16:57:58+09:00",
+    "updatedAt": "2023-03-09T08:57:58+09:00"
   }
 ]
 ```
@@ -70,6 +76,8 @@ codeがない
 `questionId`: `bb76e15c-0335-485c-a264-4ccf1a1bbc15` とか
 
 ### POST /api/question/:questionId/answer
+
+traQでのログインが必要
 
 リクエスト
 
@@ -86,11 +94,15 @@ codeがない
   "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
   "question": "しつもーん",
   "answer": "かいとーう",
-  "createdAt": "2023-03-08T16:57:58+09:00"
+  "answerer": "7265b13d-9e06-42f6-98e3-41ea742f8fb2", //traQのユーザーuuid
+  "createdAt": "2023-03-08T16:57:58+09:00",
+  "updatedAt": "2023-03-09T08:00:58+09:00"
 }
 ```
 
 回答は上書きできる。
+
+全体として、時間のフォーマットがずれそう
 
 ## 開発環境
 
