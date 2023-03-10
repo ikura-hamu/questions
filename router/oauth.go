@@ -53,3 +53,32 @@ func AuthorizeHandler(c echo.Context) error {
 
 	return c.Redirect(http.StatusSeeOther, authCodeURL)
 }
+
+func CallbackHandler(c echo.Context) error {
+	sess, err := session.Get("sessions", c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get session: %v", err))
+	}
+
+	codeVerifier, ok := sess.Values["code_verifier"].(string)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+
+	code := c.QueryParam("code")
+	if code == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "no code")
+	}
+
+	ctx := c.Request().Context()
+	token, err := conf.Exchange(ctx, code, traqoauth2.WithCodeVerifier(codeVerifier))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to exchange code into token: %v", err))
+	}
+
+	sess.Values["access_token"] = token
+
+	sess.Save(c.Request(), c.Response())
+
+	return c.String(http.StatusOK, "ok")
+}
