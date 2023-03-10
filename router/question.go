@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ikura-hamu/questions/repository"
+	traq "github.com/ikura-hamu/questions/traQ"
 	"github.com/labstack/echo/v4"
 )
 
@@ -124,12 +125,22 @@ func (h *questionHandler) PostAnswerHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad id")
 	}
 
+	token, err := getToken(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get token: %v", err))
+	}
+
+	userId, _, err := traq.GetMe(token)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get me: %v", err))
+	}
+
 	var req PostAnswerRequest
 	err = c.Bind(&req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad request body")
 	}
-	q, err := h.r.CreateAnswer(id, req.Answer)
+	q, err := h.r.CreateAnswer(id, req.Answer, userId)
 	if errors.Is(err, repository.ErrNoRecord) {
 		return echo.NewHTTPError(http.StatusNotFound, "no such id")
 	}

@@ -13,10 +13,12 @@ import (
 )
 
 type Question struct {
-	Id        uuid.UUID `db:"id"`
-	Question  string   `db:"question"`
-	Answer    sql.NullString    `db:"answer"`
-	CreatedAt time.Time `db:"created_at"`
+	Id        uuid.UUID      `db:"id"`
+	Question  string         `db:"question"`
+	Answer    sql.NullString `db:"answer"`
+	Answerer  sql.NullString `db:"answerer"`
+	CreatedAt time.Time      `db:"created_at"`
+	UpdatedAt time.Time      `db:"updated_at"`
 }
 
 type questionRepository struct {
@@ -24,7 +26,9 @@ type questionRepository struct {
 }
 
 func NewQuestionRepository(db *sqlx.DB) repository.QuestionRepository {
-	return &questionRepository{db: db}
+	return &questionRepository{
+		db: db,
+	}
 }
 
 func (q *questionRepository) CreateQuestion(question string) (domain.Question, error) {
@@ -33,20 +37,20 @@ func (q *questionRepository) CreateQuestion(question string) (domain.Question, e
 	if err != nil {
 		return domain.Question{}, fmt.Errorf("failed to create question: %w", err)
 	}
-	return domain.NewQuestion(id, question, "", time.Now()), nil
+	return domain.NewQuestion(id, question, "", "", time.Now(), time.Now()), nil
 }
 
 func (q *questionRepository) GetQuestionById(id uuid.UUID) (domain.Question, error) {
 	var question Question
 	err := q.db.Get(&question, "SELECT * FROM `questions` WHERE `id` = ?", id)
 	if errors.Is(err, sql.ErrNoRows) {
-		return domain.Question{},repository.ErrNoRecord
+		return domain.Question{}, repository.ErrNoRecord
 	}
 	if err != nil {
 		return domain.Question{}, fmt.Errorf("failed to get question by id: %w", err)
 	}
 
-	return domain.NewQuestion(question.Id, question.Question, question.Answer.String, question.CreatedAt), nil
+	return domain.NewQuestion(question.Id, question.Question, question.Answer.String, question.Answerer.String, question.CreatedAt, question.UpdatedAt), nil
 }
 
 func (q *questionRepository) GetQuestions(limit int, offset int) ([]domain.Question, error) {
@@ -58,8 +62,14 @@ func (q *questionRepository) GetQuestions(limit int, offset int) ([]domain.Quest
 	}
 
 	res := make([]domain.Question, 0, len(questions))
-	for i := range questions {
-		res = append(res, domain.NewQuestion(questions[i].Id, questions[i].Question, questions[i].Answer.String, questions[i].CreatedAt))
+	for _, question := range questions {
+		res = append(res, domain.NewQuestion(
+			question.Id,
+			question.Question,
+			question.Answer.String,
+			question.Answerer.String,
+			question.CreatedAt,
+			question.UpdatedAt))
 	}
 	return res, nil
 }
@@ -73,15 +83,21 @@ func (q *questionRepository) GetAllQuestions() (int, []domain.Question, error) {
 	}
 
 	res := make([]domain.Question, 0, len(questions))
-	for i := range questions {
-		res = append(res, domain.NewQuestion(questions[i].Id, questions[i].Question, questions[i].Answer.String, questions[i].CreatedAt))
+	for _, question := range questions {
+		res = append(res, domain.NewQuestion(
+			question.Id,
+			question.Question,
+			question.Answer.String,
+			question.Answerer.String,
+			question.CreatedAt,
+			question.UpdatedAt))
 	}
 	return len(res), res, nil
 }
 
-func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string) (domain.Question, error) {
-	var qu Question
-	err := q.db.Get(&qu, "SELECT * FROM `questions` WHERE `id` = ?", id)
+func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string, answerer uuid.UUID) (domain.Question, error) {
+	var question Question
+	err := q.db.Get(&question, "SELECT * FROM `questions` WHERE `id` = ?", id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return domain.Question{}, repository.ErrNoRecord
 	}
@@ -89,9 +105,11 @@ func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string) (domain.Q
 		return domain.Question{}, err
 	}
 
-	_, err = q.db.Exec("UPDATE `questions` SET `answer` = ? WHERE `id` = ?", answer, id)
+	updatedAt := time.Now()
+
+	_, err = q.db.Exec("UPDATE `questions` SET `answer` = ?,`answerer` = ?, `updated_at` = ? WHERE `id` = ?", answer, answerer, updatedAt, id)
 	if err != nil {
 		return domain.Question{}, fmt.Errorf("failed to create answer: %w", err)
 	}
-	return domain.NewQuestion(id, qu.Question, answer, qu.CreatedAt), nil
+	return domain.NewQuestion(id, question.Question, answer, answerer.String(), question.CreatedAt, updatedAt), nil
 }

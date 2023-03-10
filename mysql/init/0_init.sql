@@ -10,7 +10,9 @@ CREATE TABLE `questions`
     `id`    varchar(36)  NOT NULL,
     `question` LONGTEXT  NOT NULL,
     `answer`   LONGTEXT,
+    `answerer` VARCHAR(36),
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -119,13 +120,26 @@ const (
 
 func validToken(session *sessions.Session) tokenStatus {
 	_, ok := session.Values["access_token"].(string)
-	expiresAt := session.Values["expires_at"].(time.Time)
-	fmt.Println(expiresAt)
 	if !ok {
 		return noToken
 	}
+
+	expiresAt := session.Values["expires_at"].(time.Time)
 	if expiresAt.Before(time.Now()) {
 		return expired
 	}
+
 	return valid
+}
+
+func getToken(c echo.Context) (string, error) {
+	sess, err := session.Get("session", c)
+	if err != nil {
+		return "", err
+	}
+	token, ok := sess.Values["access_token"].(string)
+	if !ok {
+		return "", errors.New("no access token")
+	}
+	return token, nil
 }
