@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	traqoauth2 "github.com/ras0q/traq-oauth2"
@@ -51,11 +53,14 @@ func AuthorizeHandler(c echo.Context) error {
 		traqoauth2.WithCodeChallengeMethod(codeChallengeMethod),
 	)
 
-	return c.Redirect(http.StatusSeeOther, authCodeURL)
+	c.Response().Header().Set("Location", authCodeURL)
+
+	return echo.NewHTTPError(http.StatusSeeOther, fmt.Sprintf("redirect to %s", authCodeURL))
 }
 
 func CallbackHandler(c echo.Context) error {
 	sess, err := session.Get("session", c)
+	fmt.Println(sess)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get session: %v", err))
 	}
@@ -76,9 +81,51 @@ func CallbackHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to exchange code into token: %v", err))
 	}
 
-	sess.Values["access_token"] = token
+	fmt.Println("token", token.Expiry)
+
+	sess.Values["access_token"] = token.AccessToken
+	sess.Values["expires_at"] = token.Expiry
 
 	sess.Save(c.Request(), c.Response())
 
 	return c.String(http.StatusOK, "ok")
+}
+
+func CheckTraqLoginMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sess, err := session.Get("session", c)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get session: %v", err.Error()))
+		}
+
+		switch validToken(sess) {
+		case expired:
+			return echo.NewHTTPError(http.StatusUnauthorized, "access token is expired")
+		case noToken:
+			return echo.NewHTTPError(http.StatusUnauthorized, "no token")
+		}
+
+		return next(c)
+	}
+}
+
+type tokenStatus int
+
+const (
+	valid tokenStatus = iota
+	expired
+	noToken
+)
+
+func validToken(session *sessions.Session) tokenStatus {
+	_, ok := session.Values["access_token"].(string)
+	expiresAt := session.Values["expires_at"].(time.Time)
+	fmt.Println(expiresAt)
+	if !ok {
+		return noToken
+	}
+	if expiresAt.Before(time.Now()) {
+		return expired
+	}
+	return valid
 }

@@ -106,7 +106,6 @@ func (h *questionHandler) GetQuestionsHandler(c echo.Context) error {
 		}
 	}
 
-	fmt.Println(limit, offset)
 	q, err := h.r.GetQuestions(limit, offset)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to get questions: %w", err))
