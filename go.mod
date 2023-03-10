@@ -3,6 +3,7 @@ module github.com/ikura-hamu/questions
 go 1.19
 
 require (
+	github.com/Ras96/traq-writer v1.2.1
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/sessions v1.2.1
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/Ras96/traq-writer v1.2.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
