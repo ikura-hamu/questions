@@ -2,6 +2,24 @@
 
 ## API
 
+### GET /api/oauth2/authorize
+
+レスポンス
+303
+`/api/oauth2/callback?code=`にリダイレクト
+
+### GET /api/oauth2/callback
+
+レスポンス
+200
+成功
+
+401
+失敗
+
+404
+codeがない
+
 ### POST /api/question
 
 リクエスト

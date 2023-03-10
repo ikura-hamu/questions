@@ -3,6 +3,8 @@ version: "3.8"
 services:
   app:
     image: app
+    env_file:
+      - ./.env
     container_name: app
     build: .
     ports:

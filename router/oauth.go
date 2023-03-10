@@ -55,7 +55,7 @@ func AuthorizeHandler(c echo.Context) error {
 }
 
 func CallbackHandler(c echo.Context) error {
-	sess, err := session.Get("sessions", c)
+	sess, err := session.Get("session", c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get session: %v", err))
 	}

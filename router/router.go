@@ -22,6 +22,11 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 	e.Use(session.Middleware(store))
 
 	api := e.Group("/api")
+
+	oauth2 := api.Group("/oauth2")
+	oauth2.GET("/authorize", AuthorizeHandler)
+	oauth2.GET("/callback", CallbackHandler)
+
 	question := api.Group("/question")
 
 	question.POST("", qh.PostQuestionHandler)
