@@ -53,6 +53,19 @@ func (h *questionHandler) PostQuestionHandler(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to create question: %w", err))
 	}
+
+	message := fmt.Sprintf(`## 質問が届きました
+
+> %v
+
+質問日時：%v `,
+		question, question.CreatedAt.Format("2023/03/10 19:40"))
+
+	err = traq.PostWebhook(message)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to send webhook: %v", err.Error()))
+	}
+
 	return c.JSON(http.StatusOK, PostQuestionResponse{
 		Id:        question.Id,
 		Question:  question.Question,
