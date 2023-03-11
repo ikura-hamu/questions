@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	traqwriter "github.com/Ras96/traq-writer"
+	traqwriter "github.com/ras0q/traq-writer"
 )
 
 var (
@@ -14,6 +14,7 @@ var (
 )
 
 func PostWebhook(content string) error {
+	writer.SetEmbed(false)
 	_, err := fmt.Fprint(writer, content)
 	return err
 }

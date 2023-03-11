@@ -1,6 +1,4 @@
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
-github.com/Ras96/traq-writer v1.2.1 h1:TtAeLlwdLvAlJWH70ziH0lEdDbm54T84kitqFzRsS7U=
-github.com/Ras96/traq-writer v1.2.1/go.mod h1:8aGBQ988uDp8wtmYUoudbbiDHEZ11IapHsrhc00TE1o=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -47,6 +45,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/ras0q/traq-oauth2 v0.0.1 h1:6yvaOzC+9Eeogr6mi4S1uYagm7TJkctQkrIZk3tR1r8=
 github.com/ras0q/traq-oauth2 v0.0.1/go.mod h1:G0bGbWnDW9qgQDEqCSO9+Rbg1qnv/Z2jBuVvVkxqwjM=
+github.com/ras0q/traq-writer v1.3.0 h1:0w6d39JL8iS+NwHsxY2/LfCCA+9bpHSq+4DCJohpNwE=
+github.com/ras0q/traq-writer v1.3.0/go.mod h1:wE691G4zUeQ5zLdHo+WAJnp3wG22OYO4+A1Q7SHu2P8=
 github.com/srinathgs/mysqlstore v0.0.0-20200417050510-9cbb9420fc4c h1:HT6QRF79dL2Ed6HCrX9RufkxFGo7+NPkgYF1Uzvv/js=
 github.com/srinathgs/mysqlstore v0.0.0-20200417050510-9cbb9420fc4c/go.mod h1:kt46Hd+lF0rtpeRgOvYSWYJItOAd73EKkIBZFbX7TXs=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

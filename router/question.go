@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -54,12 +55,18 @@ func (h *questionHandler) PostQuestionHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to create question: %w", err))
 	}
 
-	message := fmt.Sprintf(`## 質問が届きました
+	lines := regexp.MustCompile("\n|\r\n").Split(question.Question, -1)
+	q := ""
+	for i := range lines {
+		q = fmt.Sprintf("%v> %v\n", q, lines[i])
+	}
 
-> %v
+	message := fmt.Sprintf(`## :mailbox_with_mail:質問が届きました
+
+%v
 
 質問日時：%v `,
-		question, question.CreatedAt.Format("2023/03/10 19:40"))
+		q, time.Now().Format("2006/01/02 15:04"))
 
 	err = traq.PostWebhook(message)
 	if err != nil {
