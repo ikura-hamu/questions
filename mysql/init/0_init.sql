@@ -18,4 +18,4 @@ CREATE TABLE `questions`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
-INSERT INTO `questions` (`id`, `question`, `answer`) VALUES ("60c2fce5-6bd2-e8df-972f-9e7d1fd453c3", "こんにちは", ""),("18ac915e-a0d3-8c01-aa6a-52e5ae35c0e6", "こんばんは", "おいしい")
+INSERT INTO `questions` (`id`, `question`, `answer`, `answerer`) VALUES ("60c2fce5-6bd2-e8df-972f-9e7d1fd453c3", "こんにちは", "",""),("18ac915e-a0d3-8c01-aa6a-52e5ae35c0e6", "こんばんは", "おいしい","7265b13d-9e06-42f6-98e3-41ea742f8fb2")
