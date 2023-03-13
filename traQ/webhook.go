@@ -13,7 +13,11 @@ var (
 	writer        = traqwriter.NewTraqWebhookWriter(webhookId, webhookSecret, traqwriter.DefaultHTTPOrigin)
 )
 
-func PostWebhook(content string) error {
+func PostWebhookOrPrint(content string) error {
+	if webhookId == "" {
+		fmt.Println(content)
+		return nil
+	}
 	writer.SetEmbed(false)
 	_, err := fmt.Fprint(writer, content)
 	return err

@@ -68,7 +68,7 @@ func (h *questionHandler) PostQuestionHandler(c echo.Context) error {
 質問日時：%v `,
 		q, time.Now().Format("2006/01/02 15:04"))
 
-	err = traq.PostWebhook(message)
+	err = traq.PostWebhookOrPrint(message)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to send webhook: %v", err.Error()))
 	}
@@ -98,32 +98,22 @@ func (h *questionHandler) GetQuestionByIdHandler(c echo.Context) error {
 
 func (h *questionHandler) GetQuestionsHandler(c echo.Context) error {
 	var err error
-	var limit int
-	var offset int
+	limit := 10
+	offset := 0
+
 	limitStr := c.QueryParam("limit")
 	if limitStr != "" {
 		limit, err = strconv.Atoi(limitStr)
-		if err != nil {
+		if err != nil || limit <= 0 {
 			return echo.NewHTTPError(http.StatusBadRequest, "bad limit")
 		}
 	}
 
 	offsetStr := c.QueryParam("offset")
-	if limitStr == "" && offsetStr != "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "offset with no limit")
-	}
-
-	if limitStr == "" && offsetStr == "" {
-		limit = 10
-		offset = 0
-	}
-
-	if offsetStr == "" {
-		offset = 0
-	} else {
+	if offsetStr != "" {
 		offset, err = strconv.Atoi(offsetStr)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "bad limit")
+		if err != nil || offset < 0 {
+			return echo.NewHTTPError(http.StatusBadRequest, "bad offset")
 		}
 	}
 
