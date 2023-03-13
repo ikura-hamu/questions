@@ -1,6 +1,9 @@
 package router
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/ikura-hamu/questions/repository/impl"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo-contrib/session"
@@ -17,8 +20,14 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 
 	qh := NewQuestionHandler(impl.NewQuestionRepository(db))
 
+	clientUrl := getEnvOrDefault("CLIENT_URL", "http://localhost:5173")
+
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{clientUrl},
+		AllowMethods: []string{http.MethodGet, http.MethodPost},
+	}))
 	e.Use(session.Middleware(store))
 
 	api := e.Group("/api")
@@ -34,4 +43,12 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 	question.GET("/:questionId", qh.GetQuestionByIdHandler)
 
 	question.POST("/:questionId/answer", qh.PostAnswerHandler, CheckTraqLoginMiddleware)
+}
+
+func getEnvOrDefault(envKey string, defaultValue string) string {
+	value, ok := os.LookupEnv(envKey)
+	if !ok {
+		return defaultValue
+	}
+	return value
 }
