@@ -18,6 +18,23 @@
 404
 codeがない
 
+## GET /api/me
+
+レスポンス
+200
+成功
+
+```json
+{
+  "id":"bb76e15c-0335-485c-a264-4ccf1a1bbc15",
+  "name": "ikura-hamu",
+  "displayName":"いくら・はむ"
+}
+```
+
+401
+ログインしていない
+
 ## POST /api/question
 
 リクエスト

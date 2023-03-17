@@ -32,6 +32,8 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 
 	api := e.Group("/api")
 
+	api.GET("/me", GetMe, CheckTraqLoginMiddleware)
+
 	oauth2 := api.Group("/oauth2")
 	oauth2.GET("/authorize", AuthorizeHandler)
 	oauth2.GET("/callback", CallbackHandler)

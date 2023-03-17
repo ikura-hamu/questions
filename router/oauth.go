@@ -8,14 +8,28 @@ import (
 	"time"
 
 	"github.com/gorilla/sessions"
+	"github.com/ikura-hamu/questions/domain"
+	traq "github.com/ikura-hamu/questions/traQ"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	traqoauth2 "github.com/ras0q/traq-oauth2"
 )
 
-type OAuthHandler interface {
-	AuthorizeHandler(c echo.Context) error
-	CallbackHandler(c echo.Context) error
+func GetMe(c echo.Context) error {
+	token, err := getToken(c)
+	if errors.Is(err, errors.New("no access token")) {
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get token: %v", err))
+	}
+
+	id, name, displayName, err := traq.GetMe(token)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get me: %v", err))
+	}
+
+	return echo.NewHTTPError(http.StatusOK, domain.NewMember(id, name, displayName))
 }
 
 var (
