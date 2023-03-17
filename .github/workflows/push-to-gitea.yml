@@ -7,7 +7,7 @@ on:
       - "main"
 
 env:
-  GITEA_SSH_URL: "ssh://git@git.trap.jp:2200/ikura-hamu/questions"
+  GITEA_SSH_URL: "ssh://git@git.trap.jp:2200/ikura-hamu/questions.git"
 
 jobs:
   sync:
