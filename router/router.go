@@ -24,7 +24,6 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{clientUrl},
 		AllowMethods: []string{http.MethodGet, http.MethodPost},
