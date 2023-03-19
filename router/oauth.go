@@ -51,6 +51,7 @@ func AuthorizeHandler(c echo.Context) error {
 
 	sess.Values["code_verifier"] = codeVerifier
 	sess.Options.SameSite = http.SameSiteNoneMode
+	sess.Options.Secure = true
 	sess.Save(c.Request(), c.Response())
 
 	codeChallengeMethod := traqoauth2.CodeChallengeMethod(c.QueryParam("method"))
