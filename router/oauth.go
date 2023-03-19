@@ -103,6 +103,8 @@ func CallbackHandler(c echo.Context) error {
 
 	sess.Save(c.Request(), c.Response())
 
+	c.Response().Header().Set("Access-Control-Allow-Credentials", "true")
+
 	return c.String(http.StatusOK, "ok")
 }
 
