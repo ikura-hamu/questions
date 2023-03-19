@@ -65,8 +65,9 @@ func (h *questionHandler) PostQuestionHandler(c echo.Context) error {
 
 %v
 
-質問日時：%v `,
-		q, time.Now().Format("2006/01/02 15:04"))
+質問日時：%v 
+回答はこちらから： https://questions-ui-silk.vercel.app/admin/answer/%v`,
+		q, time.Now().Format("2006/01/02 15:04"), question.Id)
 
 	err = traq.PostWebhookOrPrint(message)
 	if err != nil {
