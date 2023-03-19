@@ -28,6 +28,7 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{clientUrl},
 		AllowMethods: []string{http.MethodGet, http.MethodPost},
+		AllowCredentials: true,
 	}))
 	e.Use(session.Middleware(store))
 
