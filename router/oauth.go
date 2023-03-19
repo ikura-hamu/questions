@@ -75,12 +75,13 @@ func AuthorizeHandler(c echo.Context) error {
 
 func CallbackHandler(c echo.Context) error {
 	sess, err := session.Get("session", c)
-	fmt.Println(sess)
+	fmt.Println("session",sess)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get session: %v", err))
 	}
 
 	codeVerifier, ok := sess.Values["code_verifier"].(string)
+	fmt.Println("code_verifier: ", codeVerifier, ", original", sess.Values["code_verifier"])
 	if !ok {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
@@ -95,8 +96,6 @@ func CallbackHandler(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to exchange code into token: %v", err))
 	}
-
-	fmt.Println("token", token.Expiry)
 
 	sess.Values["access_token"] = token.AccessToken
 	sess.Values["expires_at"] = token.Expiry
