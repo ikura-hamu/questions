@@ -22,6 +22,8 @@ type QuestionHandler interface {
 	GetQuestionByIdHandler(c echo.Context) error
 	//GET /question?limit=10&offset=0
 	GetQuestionsHandler(c echo.Context) error
+	//GET /question/answered?limit=10&offset=0
+	GetAnsweredQuestionsHandler(c echo.Context) error
 	//POST /question/:questionId/answer
 	PostAnswerHandler(c echo.Context) error
 }
@@ -124,7 +126,36 @@ func (h *questionHandler) GetQuestionsHandler(c echo.Context) error {
 		}
 	}
 
-	count, questions, err := h.r.GetQuestions(limit, offset)
+	count, questions, err := h.r.GetQuestions(limit, offset, false)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to get questions: %w", err))
+	}
+
+	return c.JSON(http.StatusOK, GetQuestionsResponse{Count: count, Questions: questions})
+}
+
+func (h *questionHandler) GetAnsweredQuestionsHandler(c echo.Context) error {
+	var err error
+	limit := 10
+	offset := 0
+
+	limitStr := c.QueryParam("limit")
+	if limitStr != "" {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil || limit <= 0 {
+			return echo.NewHTTPError(http.StatusBadRequest, "bad limit")
+		}
+	}
+
+	offsetStr := c.QueryParam("offset")
+	if offsetStr != "" {
+		offset, err = strconv.Atoi(offsetStr)
+		if err != nil || offset < 0 {
+			return echo.NewHTTPError(http.StatusBadRequest, "bad offset")
+		}
+	}
+
+	count, questions, err := h.r.GetQuestions(limit, offset, true)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to get questions: %w", err))
 	}

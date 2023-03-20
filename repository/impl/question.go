@@ -53,15 +53,22 @@ func (q *questionRepository) GetQuestionById(id uuid.UUID) (domain.Question, err
 	return domain.NewQuestion(question.Id, question.Question, question.Answer.String, question.Answerer.String, question.CreatedAt, question.UpdatedAt), nil
 }
 
-func (q *questionRepository) GetQuestions(limit int, offset int) (int, []domain.Question, error) {
+func (q *questionRepository) GetQuestions(limit int, offset int, answered bool) (int, []domain.Question, error) {
+	var questions []Question
+	countQuery := "SELECT COUNT(*) FROM `questions`"
+	query := "SELECT * FROM `questions` "
+	if answered {
+		query += "WHERE `answerer` != '' "
+		countQuery += "WHERE `answerer` != '' "
+	}
+	query += "ORDER BY `created_at` DESC LIMIT ? OFFSET ?"
+
 	var count int
-	err := q.db.Get(&count, "SELECT COUNT(*) FROM `questions`")
+	err := q.db.Get(&count, countQuery)
 	if err != nil {
 		return 0, nil, fmt.Errorf("failed to get questions count: %w", err)
 	}
 
-	var questions []Question
-	query := "SELECT * FROM `questions` ORDER BY `created_at` DESC LIMIT ? OFFSET ?"
 	err = q.db.Select(&questions, query, limit, offset)
 	if err != nil {
 		return 0, nil, fmt.Errorf("failed to get questions with limit: %w", err)
