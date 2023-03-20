@@ -5,6 +5,7 @@
 ## API
 
 [./docs/api.md](./docs/api.md)
+[Swagger](./docs/openapi.yaml)
 
 ## Dev
 
