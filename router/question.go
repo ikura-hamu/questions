@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/ikura-hamu/questions/domain"
 	"github.com/ikura-hamu/questions/repository"
 	traq "github.com/ikura-hamu/questions/traQ"
 	"github.com/labstack/echo/v4"
@@ -97,6 +98,11 @@ func (h *questionHandler) GetQuestionByIdHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, q)
 }
 
+type GetQuestionsResponse struct {
+	Count     int               `json:"count"`
+	Questions []domain.Question `json:"questions"`
+}
+
 func (h *questionHandler) GetQuestionsHandler(c echo.Context) error {
 	var err error
 	limit := 10
@@ -118,12 +124,12 @@ func (h *questionHandler) GetQuestionsHandler(c echo.Context) error {
 		}
 	}
 
-	q, err := h.r.GetQuestions(limit, offset)
+	count, questions, err := h.r.GetQuestions(limit, offset)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("failed to get questions: %w", err))
 	}
 
-	return c.JSON(http.StatusOK, q)
+	return c.JSON(http.StatusOK, GetQuestionsResponse{Count: count, Questions: questions})
 }
 
 type PostAnswerRequest struct {
