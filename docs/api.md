@@ -61,6 +61,8 @@ codeがない
 
 ## GET /api/question
 
+回答済み・未回答含めた全質問
+
 パラメーター
 
 - `limit` デフォルト 10
@@ -70,16 +72,49 @@ codeがない
 200
 
 ```json
-[
-  {
-    "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
-    "question": "しつもーん",
-    "answer": "かいとうー",
-    "answerer": "7265b13d-9e06-42f6-98e3-41ea742f8fb2", //traQのユーザーuuid
-    "createdAt": "2023-03-08T16:57:58+09:00",
-    "updatedAt": "2023-03-09T08:57:58+09:00"
-  }
-]
+{
+  "count":1, //総件数
+  "questions":[
+    {
+      "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
+      "question": "しつもーん",
+      "answer": "かいとうー",
+      "answerer": "ikura-hamu", //traQのユーザーid
+      "createdAt": "2023-03-08T16:57:58+09:00",
+      "updatedAt": "2023-03-09T08:57:58+09:00"
+    }
+  ]
+}
+
+```
+
+## GET /api/question/answered
+
+回答済みの質問一覧
+
+パラメーター
+
+- `limit` デフォルト 10
+- `offset` デフォルト 0
+
+レスポンス
+200
+
+```json
+{
+  "count":1, //総件数
+  "questions":[
+    {
+      "id": "bb76e15c-0335-485c-a264-4ccf1a1bbc15",
+      "question": "しつもーん",
+      "answer": "かいとうー",
+      "answerer": "ikura-hamu", //traQのユーザーid
+      "createdAt": "2023-03-08T16:57:58+09:00",
+      "updatedAt": "2023-03-09T08:57:58+09:00"
+    }
+  ]
+}
+
 ```
 
 ## GET /api/question/:questionId
