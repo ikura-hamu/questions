@@ -108,7 +108,7 @@ func (q *questionRepository) GetAllQuestions() (int, []domain.Question, error) {
 	return len(res), res, nil
 }
 
-func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string, answerer uuid.UUID) (domain.Question, error) {
+func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string, answerer string) (domain.Question, error) {
 	var question Question
 	err := q.db.Get(&question, "SELECT * FROM `questions` WHERE `id` = ?", id)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -124,5 +124,5 @@ func (q *questionRepository) CreateAnswer(id uuid.UUID, answer string, answerer 
 	if err != nil {
 		return domain.Question{}, fmt.Errorf("failed to create answer: %w", err)
 	}
-	return domain.NewQuestion(id, question.Question, answer, answerer.String(), question.CreatedAt, updatedAt), nil
+	return domain.NewQuestion(id, question.Question, answer, answerer, question.CreatedAt, updatedAt), nil
 }

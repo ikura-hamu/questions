@@ -178,7 +178,7 @@ func (h *questionHandler) PostAnswerHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get token: %v", err))
 	}
 
-	userId, _, _, err := traq.GetMe(token)
+	_, userId, _, err := traq.GetMe(token)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("failed to get me: %v", err))
 	}
