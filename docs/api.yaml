@@ -1,0 +1,351 @@
+openapi: 3.1.0
+x-stoplight:
+  id: uari2dfvrpch4
+info:
+  title: api
+  version: '1.0'
+  summary: traP質問箱のAPI
+  description: traP質問箱のAPI
+  contact:
+    name: no contact
+servers:
+  - url: 'https://ikura-hamu.trap.show/questions/api'
+  - url: 'http://localhost:3000/api'
+    description: ''
+paths:
+  /admin/question:
+    parameters: []
+    get:
+      summary: Get all questions
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+              examples:
+                Example 1:
+                  value:
+                    count: 0
+                    questions:
+                      - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+                        question: しつもーん
+                        answer: ''
+                        answerer: ''
+                        createdAt: '2023-03-08T16:57:58+09:00'
+                        updatedAt: '2023-03-08T16:57:58+09:00'
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+        '404':
+          description: User Not Found
+      operationId: get-questions
+      description: 質問一覧を取得。ログインが必要
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: limit
+          description: 取得上限。指定しない場合は10
+        - schema:
+            type: integer
+          in: query
+          name: offset
+          description: 取得開始位置。指定しない場合は0
+      tags:
+        - Questions
+        - Admin
+    post:
+      summary: Post question
+      operationId: post-question
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+      description: 質問を投稿する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+              x-examples:
+                Example 1:
+                  question: しつもーん
+      tags:
+        - Questions
+  /question:
+    get:
+      summary: Get answered questions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+              examples:
+                Example 1:
+                  value:
+                    count: 0
+                    questions:
+                      - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+                        question: しつもーん
+                        answer: ''
+                        answerer: ''
+                        createdAt: '2023-03-08T16:57:58+09:00'
+                        updatedAt: '2023-03-08T16:57:58+09:00'
+      operationId: get-questions-answered
+      description: 回答済みの質問を取得
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: limit
+          description: 取得上限。デフォルトは10
+        - schema:
+            type: integer
+          in: query
+          name: offset
+          description: 取得開始位置。デフォルトは0
+      tags:
+        - Questions
+    parameters: []
+  '/question/{questionId}':
+    get:
+      summary: Get question by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+      operationId: get-question-questionId
+      tags:
+        - Questions
+      description: idから質問を取得
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: questionId
+        in: path
+        required: true
+        description: 質問ID(UUID)
+  '/admin/question/{questionId}/answer':
+    parameters:
+      - schema:
+          type: string
+        name: questionId
+        in: path
+        required: true
+    post:
+      summary: Answer question
+      operationId: post-question-questionId-answer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+      description: 質問への回答を投稿する。traQへのログインが必要
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answer:
+                  type: string
+              x-examples:
+                Example 1:
+                  answer: かいとーう
+            examples:
+              Example 1:
+                value:
+                  answer: string
+      tags:
+        - Questions
+        - Admin
+      security: []
+  /oauth2/authorize:
+    get:
+      summary: OAuth2 generate code verifier and redirect to traQ
+      tags:
+        - OAuth2
+      responses:
+        '303':
+          description: See Other
+          headers:
+            Location:
+              schema:
+                type: string
+              description: traQのリダイレクトURL
+            Set-Cookie:
+              schema:
+                type: string
+              description: Cookieを設定する
+      operationId: get-oauth2-authorize
+      description: traQ OAuthの Code Verifier生成とtraQの許可画面へのリダイレクト
+  /oauth2/callback:
+    get:
+      summary: OAuth2 callbcak
+      tags:
+        - OAuth2
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Example 1:
+                  value: ok
+        '400':
+          description: codeが無い
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Example 1:
+                  value: no code
+        '401':
+          description: 認証されていない
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Example 1:
+                  value: unauthorized
+      operationId: get-oauth2-callback
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: code
+          description: OAuth2のAuthorizationCode
+          required: true
+      description: traQのOAuthのコールバック
+  /me:
+    get:
+      summary: Get me
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: ログインしていない
+      operationId: get-me
+      description: 自分の情報を取得。traQへのログインが必要
+      security: []
+components:
+  schemas:
+    User:
+      type: object
+      x-examples:
+        Example 1:
+          id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+          name: ikura-hamu
+          displayName: いくら・はむ
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        displayName:
+          type: string
+      examples:
+        - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+          name: ikura-hamu
+          displayName: いくら・はむ
+      description: ''
+    Question:
+      type: object
+      x-examples:
+        Example 1:
+          id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+          question: しつもーん
+          answer: かいとうー
+          answerer: ikura-hamu
+          createdAt: '2023-03-08T16:57:58+09:00'
+          updatedAt: '2023-03-09T08:57:58+09:00'
+      description: 質問
+      examples:
+        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+          question: しつもーん
+          answer: ''
+          answerer: ''
+          createdAt: '2023-03-08T16:57:58+09:00'
+          updatedAt: '2023-03-08T16:57:58+09:00'
+        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+          question: しつもーん
+          answer: かいとーう
+          answerer: 7265b13d-9e06-42f6-98e3-41ea742f8fb2
+          createdAt: '2023-03-08T16:57:58+09:00'
+          updatedAt: '2023-03-09T08:00:58+09:00'
+      properties:
+        id:
+          type: string
+          format: uuid
+        question:
+          type: string
+        answer:
+          type: string
+        answerer:
+          type: string
+          maxLength: 32
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes: {}
+tags:
+  - name: Admin
+  - name: OAuth2
+  - name: Questions
+  - name: User
