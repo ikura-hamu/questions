@@ -1,10 +1,10 @@
-openapi: 3.1.0
+openapi: 3.0.1
 x-stoplight:
   id: uari2dfvrpch4
 info:
   title: api
   version: '1.0'
-  summary: traP質問箱のAPI
+#  summary: traP質問箱のAPI
   description: traP質問箱のAPI
   contact:
     name: no contact
@@ -297,10 +297,10 @@ components:
           type: string
         displayName:
           type: string
-      examples:
-        - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-          name: ikura-hamu
-          displayName: いくら・はむ
+#      examples:
+#        - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+#          name: ikura-hamu
+#          displayName: いくら・はむ
       description: ''
     Question:
       type: object
@@ -313,19 +313,19 @@ components:
           createdAt: '2023-03-08T16:57:58+09:00'
           updatedAt: '2023-03-09T08:57:58+09:00'
       description: 質問
-      examples:
-        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
-          question: しつもーん
-          answer: ''
-          answerer: ''
-          createdAt: '2023-03-08T16:57:58+09:00'
-          updatedAt: '2023-03-08T16:57:58+09:00'
-        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
-          question: しつもーん
-          answer: かいとーう
-          answerer: 7265b13d-9e06-42f6-98e3-41ea742f8fb2
-          createdAt: '2023-03-08T16:57:58+09:00'
-          updatedAt: '2023-03-09T08:00:58+09:00'
+#      examples:
+#        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+#          question: しつもーん
+#          answer: ''
+#          answerer: ''
+#         createdAt: '2023-03-08T16:57:58+09:00'
+#          updatedAt: '2023-03-08T16:57:58+09:00'
+#        - id: bb76e15c-0335-485c-a264-4ccf1a1bbc15
+#          question: しつもーん
+#          answer: かいとーう
+#          answerer: 7265b13d-9e06-42f6-98e3-41ea742f8fb2
+#          createdAt: '2023-03-08T16:57:58+09:00'
+#          updatedAt: '2023-03-09T08:00:58+09:00'
       properties:
         id:
           type: string
