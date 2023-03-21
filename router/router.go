@@ -42,11 +42,13 @@ func SetUp(e *echo.Echo, db *sqlx.DB) {
 	question := api.Group("/question")
 
 	question.POST("", qh.PostQuestionHandler)
-	question.GET("", qh.GetQuestionsHandler)
-	question.GET("/answered", qh.GetAnsweredQuestionsHandler)
+	question.GET("", qh.GetAnsweredQuestionsHandler)
 	question.GET("/:questionId", qh.GetQuestionByIdHandler)
 
-	question.POST("/:questionId/answer", qh.PostAnswerHandler, CheckTraqLoginMiddleware)
+	admin := api.Group("/admin")
+	admin.Use(CheckTraqLoginMiddleware)
+	admin.GET("/question", qh.GetQuestionsHandler)
+	admin.POST("/question/:questionId/answer", qh.PostAnswerHandler)
 }
 
 func getEnvOrDefault(envKey string, defaultValue string) string {
