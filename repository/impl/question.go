@@ -58,8 +58,8 @@ func (q *questionRepository) GetQuestions(limit int, offset int, answered bool) 
 	countQuery := "SELECT COUNT(*) FROM `questions`"
 	query := "SELECT * FROM `questions` "
 	if answered {
-		query += "WHERE `answerer` != '' "
-		countQuery += "WHERE `answerer` != '' "
+		query += "WHERE `answerer` IS NOT NULL "
+		countQuery += "WHERE `answerer` IS NOT NULL "
 	}
 	query += "ORDER BY `created_at` DESC LIMIT ? OFFSET ?"
 

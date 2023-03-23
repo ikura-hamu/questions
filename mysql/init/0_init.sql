@@ -13,9 +13,10 @@ CREATE TABLE `questions`
     `answerer` VARCHAR(32),
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX answerer_index (answerer)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
-INSERT INTO `questions` (`id`, `question`, `answer`, `answerer`) VALUES ("60c2fce5-6bd2-e8df-972f-9e7d1fd453c3", "こんにちは", "",""),("18ac915e-a0d3-8c01-aa6a-52e5ae35c0e6", "こんばんは", "おいしい","ikura-hamu")
+INSERT INTO `questions` (`id`, `question`, `answer`, `answerer`) VALUES ("60c2fce5-6bd2-e8df-972f-9e7d1fd453c3", "こんにちは", NULL,NULL),("18ac915e-a0d3-8c01-aa6a-52e5ae35c0e6", "こんばんは", "おいしい","ikura-hamu");
