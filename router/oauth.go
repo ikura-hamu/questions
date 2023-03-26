@@ -60,9 +60,9 @@ func AuthorizeHandler(c echo.Context) error {
 
 	sess.Save(c.Request(), c.Response())
 
-	codeChallengeMethod := traqoauth2.CodeChallengeMethod(c.QueryParam("method"))
-	if codeChallengeMethod == "" {
-		codeChallengeMethod = traqoauth2.CodeChallengePlain
+	codeChallengeMethod, ok := traqoauth2.CodeChallengeMethodFromStr(c.QueryParam("method"))
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid code challenge method: %v", c.QueryParam("method")))
 	}
 
 	codeChallenge, err := traqoauth2.GenerateCodeChallenge(codeVerifier, codeChallengeMethod)

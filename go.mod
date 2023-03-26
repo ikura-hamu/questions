@@ -9,7 +9,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/labstack/echo-contrib v0.14.1
 	github.com/labstack/echo/v4 v4.10.2
-	github.com/ras0q/traq-oauth2 v0.0.1
+	github.com/ras0q/traq-oauth2 v0.1.0
 	github.com/ras0q/traq-writer v1.3.0
 	github.com/srinathgs/mysqlstore v0.0.0-20200417050510-9cbb9420fc4c
 	github.com/traPtitech/go-traq v0.0.0-20220822084224-d405d26bce99
